@@ -5,5 +5,4 @@ Manifest.txt
 README.txt
 Rakefile
 lib/minitest/ci.rb
-test/.test_minitest_ci.rb.swp
 test/test_minitest_ci.rb
