@@ -7,7 +7,7 @@ require 'cgi'
 
 module MiniTest
   module Ci
-    VERSION = '1.0.1'
+    VERSION = '1.0.2'
 
     @test_dir = nil #'test/reports'
     @error = nil
