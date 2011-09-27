@@ -75,7 +75,7 @@ class TestMinitest::TestCi < MiniTest::Unit::TestCase
     assert_equal '1', passed['assertions']
 
     skipped = @doc.at_xpath('/testsuite/testcase[@name="test_skip_assertion"]')
-    assert_equal 'skip assertion', skipped.at_xpath('failure')['message']
+    assert_equal 'skip assertion', skipped.at_xpath('skipped')['message']
     assert_equal '0', skipped['assertions']
 
     failure = @doc.at_xpath('/testsuite/testcase[@name="test_fail_assertion"]')

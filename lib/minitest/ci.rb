@@ -78,14 +78,23 @@ module MiniTest
           f.puts "  <testcase time='#{"%6f" % time}' name='#{method}' assertions='#{asserts}'>"
           if error
             bt = MiniTest::filter_backtrace(error.backtrace).join "\n"
-            f.write "    <failure type='#{error.class}' message='#{CGI.escapeHTML(error.message)}'>"
+            f.write "    <#{type error} type='#{error.class}' message='#{CGI.escapeHTML(error.message)}'>"
             f.puts CGI.escapeHTML(bt)
-            f.puts "    </failure>"
+            f.puts "    </#{type error}>"
           end
           f.puts "  </testcase>"
         end
 
         f.puts "</testsuite>"
+      end
+    end
+
+    def type e
+      case e
+      when MiniTest::Skip
+        'skipped'
+      else
+        'failure'
       end
     end
 
