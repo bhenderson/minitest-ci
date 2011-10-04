@@ -1,12 +1,36 @@
-gem 'minitest', '2.6.0'
-require "minitest/unit"
-abort 'minitest version 2.6.0 required' unless MiniTest::Unit::VERSION == '2.6.0'
+begin
+  gem 'minitest', '2.6.0'
+  require "minitest/unit"
+rescue Gem::LoadError => e
+  msg = [
+    'minitest version 2.6.0 required',
+    'try: gem install minitest -v 2.6.0'
+  ]
+  raise e.exception msg.join("\n")
+end
 
 require 'fileutils'
 require 'cgi'
 
 module MiniTest
   module Ci
+    ###
+    # copied
+    file = if RUBY_VERSION =~ /^1\.9/ then  # bt's expanded, but __FILE__ isn't :(
+             File.expand_path __FILE__
+           elsif  __FILE__ =~ /^[^\.]/ then # assume both relative
+             require 'pathname'
+             pwd = Pathname.new Dir.pwd
+             pn = Pathname.new File.expand_path(__FILE__)
+             pn = File.join(".", pn.relative_path_from(pwd)) unless pn.relative?
+             pn.to_s
+           else                             # assume both are expanded
+             __FILE__
+           end
+    # end of copy
+    ###
+    CI_MINI_DIR = File.dirname(File.dirname(file))
+
     VERSION = '1.0.2'
 
     @test_dir = nil #'test/reports'
@@ -55,6 +79,24 @@ module MiniTest
       FileUtils.mkdir_p @test_dir
     end
 
+    def escape o
+      CGI.escapeHTML(o.to_s)
+    end
+
+    # use original as well as filtering this file.
+    def filter_backtrace bt
+      bt = MiniTest::filter_backtrace bt
+      orig_mini_dir = MiniTest::MINI_DIR
+
+      orig_verbose, $VERBOSE = $VERBOSE, nil
+
+      MiniTest.const_set :MINI_DIR, CI_MINI_DIR
+      MiniTest::filter_backtrace bt
+    ensure
+      MiniTest.const_set :MINI_DIR, orig_mini_dir
+      $VERBOSE = orig_verbose
+    end
+
     def generate_suite name, suite
       total_time, assertions, errors, failures, skips = 0, 0, 0, 0, 0
       suite.each do |_, t, a, e|
@@ -77,9 +119,9 @@ module MiniTest
         suite.each do |method, time, asserts, error|
           f.puts "  <testcase time='#{"%6f" % time}' name='#{method}' assertions='#{asserts}'>"
           if error
-            bt = MiniTest::filter_backtrace(error.backtrace).join "\n"
-            f.write "    <#{type error} type='#{error.class}' message='#{CGI.escapeHTML(error.message)}'>"
-            f.puts CGI.escapeHTML(bt)
+            bt = filter_backtrace(error.backtrace).join "\n"
+            f.write "    <#{type error} type='#{escape error.class}' message='#{escape error.message}'>"
+            f.puts escape bt
             f.puts "    </#{type error}>"
           end
           f.puts "  </testcase>"

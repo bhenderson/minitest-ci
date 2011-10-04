@@ -20,8 +20,12 @@ class MockTestSuite < MiniTest::Unit::TestCase
     pass
   end
 
-  def test_cgi_message
+  def test_invalid_characters_in_message
     raise Object.new.inspect
+  end
+
+  def test_invalid_error_name
+    raise Class.new(Exception)
   end
 end
 
@@ -50,21 +54,22 @@ class TestMinitest::TestCi < MiniTest::Unit::TestCase
   def setup
     file = "#{MiniTest::Ci.test_dir}/TEST-MockTestSuite.xml"
     assert File.exists?( file ), 'expected xml file to exists'
-    @doc = Nokogiri.parse File.read file
+    @file = File.read file
+    @doc = Nokogiri.parse @file
     @doc = @doc.at_xpath('/testsuite')
   end
 
   def test_testsuite
     assert_equal "1", @doc['skipped']
     assert_equal "1", @doc['failures']
-    assert_equal "3", @doc['errors']
+    assert_equal "4", @doc['errors']
     assert_equal "2", @doc['assertions']
-    assert_equal "5", @doc['tests']
+    assert_equal "6", @doc['tests']
     assert_equal "MockTestSuite", @doc['name']
   end
 
   def test_testcase
-    assert_equal 5, @doc.children.count {|c| Nokogiri::XML::Element === c}
+    assert_equal 6, @doc.children.count {|c| Nokogiri::XML::Element === c}
     @doc.children.each do |c|
       next unless Nokogiri::XML::Element === c
       assert_equal 'testcase', c.name
@@ -86,13 +91,26 @@ class TestMinitest::TestCi < MiniTest::Unit::TestCase
     assert_equal 'raise an error', error.at_xpath('failure')['message']
     assert_equal '0', error['assertions']
 
-    error = @doc.at_xpath('/testsuite/testcase[@name="test_cgi_message"]')
+    error = @doc.at_xpath('/testsuite/testcase[@name="test_invalid_characters_in_message"]')
     assert_match( /^#<Object/, error.at_xpath('failure')['message'] )
+    assert_equal '0', error['assertions']
+
+    error = @doc.at_xpath('/testsuite/testcase[@name="test_invalid_error_name"]')
+    assert_match( /^#<Class/, error.at_xpath('failure')['message'] )
     assert_equal '0', error['assertions']
   end
 
   def test_output
     self.class.output.rewind
     assert_match( /generating ci files/, self.class.output.read )
+  end
+
+  def test_filter_backtrace
+    bt = begin; raise; rescue => e; e.backtrace; end
+
+    bt = MiniTest::Ci.send :filter_backtrace, bt
+
+    assert_equal 1, bt.size
+    assert_match( /#{__FILE__}/, bt.first )
   end
 end
