@@ -31,7 +31,7 @@ module MiniTest
     ###
     CI_MINI_DIR = File.dirname(File.dirname(file))
 
-    VERSION = '1.0.3'
+    VERSION = '1.0.4'
 
     @test_dir = nil #'test/reports'
     @error = nil
