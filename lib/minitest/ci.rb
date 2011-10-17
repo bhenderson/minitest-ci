@@ -120,7 +120,7 @@ module MiniTest
           f.puts "  <testcase time='#{"%6f" % time}' name='#{method}' assertions='#{asserts}'>"
           if error
             bt = filter_backtrace(error.backtrace).join "\n"
-            f.write "    <#{type error} type='#{escape error.class}' message='#{escape error.message}'>"
+            f.write "    <#{type error} type='#{escape error.class}' message=#{escape( error.message ).inspect}>"
             f.puts escape bt
             f.puts "    </#{type error}>"
           end

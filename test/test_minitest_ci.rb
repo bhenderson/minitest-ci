@@ -27,6 +27,10 @@ class MockTestSuite < MiniTest::Unit::TestCase
   def test_invalid_error_name
     raise Class.new(Exception)
   end
+
+  def test_escaping_failure_message
+    flunk "failed: doesn't like single or \"double\" quotes or symbols such as <"
+  end
 end
 
 class TestMinitest
@@ -61,15 +65,15 @@ class TestMinitest::TestCi < MiniTest::Unit::TestCase
 
   def test_testsuite
     assert_equal "1", @doc['skipped']
-    assert_equal "1", @doc['failures']
+    assert_equal "2", @doc['failures']
     assert_equal "4", @doc['errors']
-    assert_equal "2", @doc['assertions']
-    assert_equal "6", @doc['tests']
+    assert_equal "3", @doc['assertions']
+    assert_equal "7", @doc['tests']
     assert_equal "MockTestSuite", @doc['name']
   end
 
   def test_testcase
-    assert_equal 6, @doc.children.count {|c| Nokogiri::XML::Element === c}
+    assert_equal 7, @doc.children.count {|c| Nokogiri::XML::Element === c}
     @doc.children.each do |c|
       next unless Nokogiri::XML::Element === c
       assert_equal 'testcase', c.name
@@ -98,6 +102,11 @@ class TestMinitest::TestCi < MiniTest::Unit::TestCase
     error = @doc.at_xpath('/testsuite/testcase[@name="test_invalid_error_name"]')
     assert_match( /^#<Class/, error.at_xpath('failure')['message'] )
     assert_equal '0', error['assertions']
+
+    error = @doc.at_xpath('/testsuite/testcase[@name="test_escaping_failure_message"]')
+    msg = "failed: doesn't like single or \"double\" quotes or symbols such as <"
+    assert_equal msg, error.at_xpath('failure')['message']
+    assert_equal '1', error['assertions']
   end
 
   def test_output
