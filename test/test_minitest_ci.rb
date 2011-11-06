@@ -41,12 +41,11 @@ class TestMinitest::TestCi < MiniTest::Unit::TestCase
   old_out, MiniTest::Unit.output = MiniTest::Unit.output, @output
   begin
     runner = MiniTest::CiUnit.new
-    MiniTest::Ci.munit = runner
 
     runner._run_suite MockTestSuite, :test
 
     @@test_suites.delete MockTestSuite
-    MiniTest::Ci.finish
+    MiniTest::Ci.finish runner.output
   ensure
     MiniTest::Unit.output = old_out
   end

@@ -35,7 +35,6 @@ module MiniTest
 
     @test_dir = nil #'test/reports'
     @error = nil
-    @munit = nil
     @suites = Hash.new {|h,k| h[k] = []}
 
     class << self
@@ -55,9 +54,9 @@ module MiniTest
       @suites[suite] << a
     end
 
-    def finish
-      @munit.puts
-      @munit.puts 'generating ci files'
+    def finish io
+      io.puts
+      io.puts 'generating ci files'
 
       clean
 
@@ -66,10 +65,6 @@ module MiniTest
           generate_suite name, suite
         end
       end
-    end
-
-    def munit= m
-      @munit = m
     end
 
     private
@@ -143,13 +138,27 @@ module MiniTest
     extend self
   end
 
-  class CiUnit < Unit
+  class Unit
+    # pull this out of _run_suite to make it easier to grab stuff
+    def _run_suite_method suite, method
+      inst = suite.new method
+      inst._assertions = 0
+
+      print "#{suite}##{method} = " if @verbose
+
+      @start_time = Time.now
+      result = inst.run self
+      time = Time.now - @start_time
+
+      print "%.2f s = " % time if @verbose
+      print result
+      puts if @verbose
+
+      inst._assertions
+    end
 
     # copied out of MiniTest::Unit
     def _run_suite suite, type
-      # added this line
-      MiniTest::Ci.munit = self
-
       header = "#{type}_suite_header"
       puts send(header, suite) if respond_to? header
 
@@ -157,26 +166,24 @@ module MiniTest
       filter = Regexp.new $1 if filter =~ /\/(.*)\//
 
       assertions = suite.send("#{type}_methods").grep(filter).map { |method|
-        inst = suite.new method
-        inst._assertions = 0
-
-        print "#{suite}##{method} = " if @verbose
-
-        @start_time = Time.now
-        result = inst.run self
-        time = Time.now - @start_time
-
-        print "%.2f s = " % time if @verbose
-        print result
-        puts if @verbose
-
-        # added this line
-        MiniTest::Ci.push suite, method, time, inst._assertions
-
-        inst._assertions
+        _run_suite_method suite, method
       }
 
       return assertions.size, assertions.inject(0) { |sum, n| sum + n }
+    end
+  end
+
+  class CiUnit < Unit
+
+    def _run_suite_method suite, method
+      t = Time.now
+      assertions = super
+      time = Time.now - t
+
+      # time here is "good enough"
+      MiniTest::Ci.push suite, method, time, assertions
+
+      assertions
     end
 
     def puke klass, meth, e
@@ -186,7 +193,7 @@ module MiniTest
 
     def status io = self.output
       super
-      MiniTest::Ci.finish
+      MiniTest::Ci.finish io
     end
 
   end
