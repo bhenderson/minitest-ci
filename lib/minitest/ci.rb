@@ -45,7 +45,7 @@ module MiniTest
       @error = e
     end
 
-    def push suite, method, time, num
+    def push suite, method, num, time
       a = [method, time, num]
       if @error
         a << @error
@@ -154,7 +154,7 @@ module MiniTest
       print result
       puts if @verbose
 
-      inst._assertions
+      [inst._assertions, time]
     end
 
     # copied out of MiniTest::Unit
@@ -166,7 +166,9 @@ module MiniTest
       filter = Regexp.new $1 if filter =~ /\/(.*)\//
 
       assertions = suite.send("#{type}_methods").grep(filter).map { |method|
-        _run_suite_method suite, method
+        a_count, _ = _run_suite_method suite, method
+
+        a_count
       }
 
       return assertions.size, assertions.inject(0) { |sum, n| sum + n }
@@ -176,14 +178,11 @@ module MiniTest
   class CiUnit < Unit
 
     def _run_suite_method suite, method
-      t = Time.now
-      assertions = super
-      time = Time.now - t
+      res = super
 
-      # time here is "good enough"
-      MiniTest::Ci.push suite, method, time, assertions
+      MiniTest::Ci.push suite, method, *res
 
-      assertions
+      res
     end
 
     def puke klass, meth, e
