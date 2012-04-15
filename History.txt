@@ -1,3 +1,8 @@
+=== 2.0.0 / 2012-04-15
+* 1 major enhancement
+
+  * Updates to use #record method from newer MiniTest. Removes copied code, yay!
+
 === 1.0.0 / 2011-09-23
 
 * 1 major enhancement
