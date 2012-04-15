@@ -5,11 +5,12 @@
 == DESCRIPTION:
 
 CI reporter plugin for MiniTest
+
 This gem was made possible by ATT Interactive.
 
 == FEATURES/PROBLEMS:
 
-* Monkeypatches MiniTest::Unit#_run_suite so I have to fix the version of MiniTest I support.
+* Uses MiniTest::Unit#record which is only available since version 2.12.0
 
 == SYNOPSIS:
 

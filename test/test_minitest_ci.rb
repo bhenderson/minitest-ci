@@ -49,14 +49,14 @@ class TestMinitest::TestCi < MiniTest::Unit::TestCase
   ensure
     MiniTest::Unit.output = old_out
   end
+  MiniTest::Unit.runner = nil # reset
 
   def self.output
     @output
   end
 
   def setup
-    file = "#{MiniTest::Ci.test_dir}/TEST-MockTestSuite.xml"
-    assert File.exists?( file ), 'expected xml file to exists'
+    file = "#{MiniTest::Ci.report_dir}/TEST-MockTestSuite.xml"
     @file = File.read file
     @doc = Nokogiri.parse @file
     @doc = @doc.at_xpath('/testsuite')
@@ -113,12 +113,8 @@ class TestMinitest::TestCi < MiniTest::Unit::TestCase
     assert_match( /generating ci files/, self.class.output.read )
   end
 
-  def test_filter_backtrace
-    bt = begin; raise; rescue => e; e.backtrace; end
-
-    bt = MiniTest::Ci.send :filter_backtrace, bt
-
-    assert_equal 1, bt.size
-    assert_match( /#{__FILE__}/, bt.first )
+  def test_filtering_backtraces
+    error = @doc.at_xpath('/testsuite/testcase[@name="test_raise_error"]')
+    refute_match /lib\/minitest/, error.inner_text
   end
 end

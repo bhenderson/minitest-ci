@@ -1,12 +1,7 @@
-begin
-  gem 'minitest', '2.6.0'
-  require "minitest/unit"
-rescue Gem::LoadError => e
-  msg = [
-    'minitest version 2.6.0 required',
-    'try: gem install minitest -v 2.6.0'
-  ]
-  raise e.exception msg.join("\n")
+require 'minitest/unit'
+#unless MiniTest::Unit::VERSION >= '2.12.0'
+unless MiniTest::Unit.public_method_defined? :record
+  abort 'you are running an unsupported version of MiniTest. try upgrading.'
 end
 
 require 'fileutils'
@@ -14,44 +9,20 @@ require 'cgi'
 
 module MiniTest
   module Ci
-    ###
-    # copied
-    file = if RUBY_VERSION =~ /^1\.9/ then  # bt's expanded, but __FILE__ isn't :(
-             File.expand_path __FILE__
-           elsif  __FILE__ =~ /^[^\.]/ then # assume both relative
-             require 'pathname'
-             pwd = Pathname.new Dir.pwd
-             pn = Pathname.new File.expand_path(__FILE__)
-             pn = File.join(".", pn.relative_path_from(pwd)) unless pn.relative?
-             pn.to_s
-           else                             # assume both are expanded
-             __FILE__
-           end
-    # end of copy
-    ###
-    CI_MINI_DIR = File.dirname(File.dirname(file))
 
     VERSION = '1.0.4'
 
-    @test_dir = nil #'test/reports'
-    @error = nil
+    @report_dir = nil
     @suites = Hash.new {|h,k| h[k] = []}
 
     class << self
-      attr_accessor :test_dir
+      # Accessor method to change the report dir if you don't like the
+      # defaults.
+      attr_accessor :report_dir
     end
 
-    def add_error e
-      @error = e
-    end
-
-    def push suite, method, num, time
-      a = [method, time, num]
-      if @error
-        a << @error
-        @error = nil
-      end
-      @suites[suite] << a
+    def push suite, method, num_assertions, time, error
+      @suites[suite] << [method, num_assertions, time, error]
     end
 
     def finish io
@@ -60,7 +31,7 @@ module MiniTest
 
       clean
 
-      Dir.chdir @test_dir do
+      Dir.chdir report_dir do
         @suites.each do |name, suite|
           generate_suite name, suite
         end
@@ -70,31 +41,17 @@ module MiniTest
     private
 
     def clean
-      FileUtils.rm_rf @test_dir
-      FileUtils.mkdir_p @test_dir
+      FileUtils.rm_rf report_dir
+      FileUtils.mkdir_p report_dir
     end
 
     def escape o
       CGI.escapeHTML(o.to_s)
     end
 
-    # use original as well as filtering this file.
-    def filter_backtrace bt
-      bt = MiniTest::filter_backtrace bt
-      orig_mini_dir = MiniTest::MINI_DIR
-
-      orig_verbose, $VERBOSE = $VERBOSE, nil
-
-      MiniTest.const_set :MINI_DIR, CI_MINI_DIR
-      MiniTest::filter_backtrace bt
-    ensure
-      MiniTest.const_set :MINI_DIR, orig_mini_dir
-      $VERBOSE = orig_verbose
-    end
-
     def generate_suite name, suite
       total_time, assertions, errors, failures, skips = 0, 0, 0, 0, 0
-      suite.each do |_, t, a, e|
+      suite.each do |_, a, t, e|
         total_time += t
         assertions += a
         case e
@@ -111,12 +68,12 @@ module MiniTest
         f.puts '<?xml version="1.0" encoding="UTF-8"?>'
         f.puts "<testsuite time='#{"%6f" % total_time}' skipped='#{skips}' failures='#{failures}' errors='#{errors}' name='#{name}' assertions='#{assertions}' tests='#{suite.count}'>"
 
-        suite.each do |method, time, asserts, error|
+        suite.each do |method, asserts, time, error|
           f.puts "  <testcase time='#{"%6f" % time}' name='#{method}' assertions='#{asserts}'>"
           if error
-            bt = filter_backtrace(error.backtrace).join "\n"
+            bt = MiniTest::filter_backtrace error.backtrace
             f.write "    <#{type error} type='#{escape error.class}' message=#{escape( error.message ).inspect}>"
-            f.puts escape bt
+            f.puts escape bt.join "\n"
             f.puts "    </#{type error}>"
           end
           f.puts "  </testcase>"
@@ -138,55 +95,10 @@ module MiniTest
     extend self
   end
 
-  class Unit
-    # pull this out of _run_suite to make it easier to grab stuff
-    def _run_suite_method suite, method
-      inst = suite.new method
-      inst._assertions = 0
-
-      print "#{suite}##{method} = " if @verbose
-
-      @start_time = Time.now
-      result = inst.run self
-      time = Time.now - @start_time
-
-      print "%.2f s = " % time if @verbose
-      print result
-      puts if @verbose
-
-      [inst._assertions, time]
-    end
-
-    # copied out of MiniTest::Unit
-    def _run_suite suite, type
-      header = "#{type}_suite_header"
-      puts send(header, suite) if respond_to? header
-
-      filter = options[:filter] || '/./'
-      filter = Regexp.new $1 if filter =~ /\/(.*)\//
-
-      assertions = suite.send("#{type}_methods").grep(filter).map { |method|
-        a_count, _ = _run_suite_method suite, method
-
-        a_count
-      }
-
-      return assertions.size, assertions.inject(0) { |sum, n| sum + n }
-    end
-  end
-
   class CiUnit < Unit
 
-    def _run_suite_method suite, method
-      res = super
-
-      MiniTest::Ci.push suite, method, *res
-
-      res
-    end
-
-    def puke klass, meth, e
-      MiniTest::Ci.add_error e
+    def record suite, method, assertions, time, error
+      MiniTest::Ci.push suite, method, assertions, time, error
       super
     end
 
@@ -199,5 +111,5 @@ module MiniTest
 end
 
 # set defaults
-MiniTest::Ci.test_dir = 'test/reports'
+MiniTest::Ci.report_dir = 'test/reports'
 MiniTest::Unit.runner = MiniTest::CiUnit.new
