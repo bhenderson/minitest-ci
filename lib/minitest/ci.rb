@@ -97,14 +97,13 @@ module MiniTest
 
   class CiUnit < Unit
 
+    after_tests do
+      MiniTest::Ci.finish self.output
+    end
+
     def record suite, method, assertions, time, error
       MiniTest::Ci.push suite, method, assertions, time, error
       super
-    end
-
-    def status io = self.output
-      super
-      MiniTest::Ci.finish io
     end
 
   end
