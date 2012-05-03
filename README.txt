@@ -16,6 +16,20 @@ This gem was made possible by ATT Interactive.
 
   require 'minitest/ci'
 
+Records test results and generates XML files (for junit hudson plugin
+for example) at the end of the test run. The report directory is cleaned
+between test runs. To disable:
+
+  # test/helper.rb
+  MiniTest::Ci.disable_clean = true
+
+  # Rakefile (optional, but recommended!)
+  task :ci_cleanup do
+    require 'minitest/ci'
+    MiniTest::Ci.clean
+  end
+  task :test => %w[ci_cleanup test:one test:two]
+
 == REQUIREMENTS:
 
 * See Rakefile

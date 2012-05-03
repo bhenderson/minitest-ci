@@ -19,6 +19,9 @@ module MiniTest
       # Accessor method to change the report dir if you don't like the
       # defaults.
       attr_accessor :report_dir
+
+      # If set to trueish, report_dir will not be cleaned. Default: false
+      attr_accessor :disable_clean
     end
 
     def push suite, method, num_assertions, time, error
@@ -38,12 +41,12 @@ module MiniTest
       end
     end
 
-    private
-
-    def clean
-      FileUtils.rm_rf report_dir
-      FileUtils.mkdir_p report_dir
+    def clean verbose = false
+      FileUtils.rm_rf report_dir, :verbose => verbose unless disable_clean
+      FileUtils.mkdir_p report_dir, :verbose => verbose
     end
+
+    private
 
     def escape o
       CGI.escapeHTML(o.to_s)
