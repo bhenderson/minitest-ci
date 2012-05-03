@@ -49,7 +49,6 @@ class TestMinitest::TestCi < MiniTest::Unit::TestCase
   ensure
     MiniTest::Unit.output = old_out
   end
-  MiniTest::Unit.runner = nil # reset
 
   def self.output
     @output
@@ -115,6 +114,6 @@ class TestMinitest::TestCi < MiniTest::Unit::TestCase
 
   def test_filtering_backtraces
     error = @doc.at_xpath('/testsuite/testcase[@name="test_raise_error"]')
-    refute_match /lib\/minitest/, error.inner_text
+    refute_match( /lib\/minitest/, error.inner_text )
   end
 end

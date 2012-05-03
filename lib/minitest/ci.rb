@@ -50,7 +50,7 @@ module MiniTest
     end
 
     def generate_suite name, suite
-      total_time, assertions, errors, failures, skips = 0, 0, 0, 0, 0
+      total_time = assertions = errors = failures = skips = 0
       suite.each do |_, a, t, e|
         total_time += t
         assertions += a
