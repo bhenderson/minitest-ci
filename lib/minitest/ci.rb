@@ -20,9 +20,11 @@ module MiniTest
       # defaults.
       attr_accessor :report_dir
 
-      # If set to trueish, report_dir will not be cleaned. Default: false
-      attr_accessor :disable_clean
+      # Clean the report_dir between test runs? (defaults to true)
+      attr_accessor :auto_clean
     end
+    self.report_dir = 'test/reports'
+    self.auto_clean = true
 
     def push suite, method, num_assertions, time, error
       @suites[suite] << [method, num_assertions, time, error]
@@ -42,7 +44,7 @@ module MiniTest
     end
 
     def clean verbose = false
-      FileUtils.rm_rf report_dir, :verbose => verbose unless disable_clean
+      FileUtils.rm_rf report_dir, :verbose => verbose if auto_clean
       FileUtils.mkdir_p report_dir, :verbose => verbose
     end
 
@@ -112,6 +114,5 @@ module MiniTest
   end
 end
 
-# set defaults
-MiniTest::Ci.report_dir = 'test/reports'
+# use
 MiniTest::Unit.runner = MiniTest::CiUnit.new

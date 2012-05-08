@@ -21,7 +21,7 @@ for example) at the end of the test run. The report directory is cleaned
 between test runs. To disable:
 
   # test/helper.rb
-  MiniTest::Ci.disable_clean = true
+  MiniTest::Ci.auto_clean = false
 
   # Rakefile (optional, but recommended!)
   task :ci_cleanup do
