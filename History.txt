@@ -1,3 +1,14 @@
+=== 2.2.0 / 2012-05-10
+This release was created separate from 2.1.0 incase people don't want to upgrade to 3.0 (why?)
+
+* 1 minor enhancement
+
+  * Bumps minitest dep to latest version.
+
+* 1 unknowns:
+
+  * Updates .gitignore for pkg dir.
+
 === 2.1.0 / 2012-05-10
 * 1 minor enhancement
 
