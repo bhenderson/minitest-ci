@@ -12,7 +12,6 @@ module MiniTest
 
     VERSION = '2.0.0'
 
-    @report_dir = nil
     @suites = Hash.new {|h,k| h[k] = []}
 
     class << self
