@@ -10,7 +10,7 @@ require 'cgi'
 module MiniTest
   module Ci
 
-    VERSION = '2.0.0'
+    VERSION = '2.1.0'
 
     @suites = Hash.new {|h,k| h[k] = []}
 

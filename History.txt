@@ -1,3 +1,19 @@
+=== 2.1.0 / 2012-05-10
+* 1 minor enhancement
+
+  * Adds ability to disable cleaning report dir. #2
+
+* 1 bug fix
+
+  * Uses M::Unit::after_tests instead of M::Unit#status to trigger finish method. Fixes #3
+
+* 6 unknowns:
+
+  * @report_dir doesn't need to be initialized here because I do it a few lines later.
+  * Changes clean switch to positive accessor. #2
+  * Cleans up init variables. Removes runner reset. Appeases warning.
+  * Removes cruft
+
 === 2.0.0 / 2012-04-15
 * 1 major enhancement
 
