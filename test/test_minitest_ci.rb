@@ -1,4 +1,5 @@
 require "minitest/ci"
+require "minitest/spec"
 require "minitest/autorun"
 require 'stringio'
 require 'nokogiri'
@@ -33,6 +34,12 @@ class MockTestSuite < MiniTest::Unit::TestCase
   end
 end
 
+SpecWithPunctuation = describe "spec/with::punctuation" do
+ it "passes" do
+   pass
+ end
+end
+
 class TestMinitest
 end
 
@@ -43,6 +50,7 @@ class TestMinitest::TestCi < MiniTest::Unit::TestCase
     runner = MiniTest::CiUnit.new
 
     runner._run_suite MockTestSuite, :test
+    runner._run_suite SpecWithPunctuation, :test
 
     @@test_suites.delete MockTestSuite
     MiniTest::Ci.finish runner.output
@@ -115,5 +123,10 @@ class TestMinitest::TestCi < MiniTest::Unit::TestCase
   def test_filtering_backtraces
     error = @doc.at_xpath('/testsuite/testcase[@name="test_raise_error"]')
     refute_match( /lib\/minitest/, error.inner_text )
+  end
+
+  def test_testname
+    assert File.file?(File.join(MiniTest::Ci.report_dir,
+                      "TEST-spec%2Fwith%3A%3Apunctuation.xml"))
   end
 end

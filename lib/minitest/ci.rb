@@ -68,7 +68,7 @@ module MiniTest
         end
       end
 
-      File.open "TEST-#{name}.xml", "w" do |f|
+      File.open "TEST-#{CGI.escape(name.to_s)}.xml", "w" do |f|
         f.puts '<?xml version="1.0" encoding="UTF-8"?>'
         f.puts "<testsuite time='#{"%6f" % total_time}' skipped='#{skips}' failures='#{failures}' errors='#{errors}' name='#{name}' assertions='#{assertions}' tests='#{suite.count}'>"
 
