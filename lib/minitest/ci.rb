@@ -1,4 +1,5 @@
 require 'minitest/unit'
+require 'cgi'
 #unless MiniTest::Unit::VERSION >= '2.12.0'
 unless MiniTest::Unit.public_method_defined? :record
   abort 'you are running an unsupported version of MiniTest. try upgrading.'
