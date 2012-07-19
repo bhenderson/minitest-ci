@@ -1,3 +1,4 @@
+gem 'minitest'
 require 'minitest/unit'
 #unless MiniTest::Unit::VERSION >= '2.12.0'
 unless MiniTest::Unit.public_method_defined? :record

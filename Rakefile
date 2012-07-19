@@ -14,6 +14,7 @@ Hoe.spec 'minitest-ci' do
   extra_deps << ['minitest', '~> 3.0']
   extra_dev_deps << ['nokogiri', '~> 1.5.0']
   extra_dev_deps << ['rdoc',     '>= 2.4.2']
+  extra_dev_deps << ['ZenTest']
 end
 
 # vim: syntax=ruby
