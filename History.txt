@@ -1,3 +1,17 @@
+=== 2.3.0 / 2012-07-19
+
+* 1 minor enhancement:
+
+  * Adds zentest as devdep. Forces gem of minitest
+
+* 4 unknowns:
+
+  * Adds hoe-version.
+  * CGI.escape suite name in generated filename. Fixes #5.
+  * Edited to remove second require of cgi.
+  * I was seeing the wrong version of minitest being loaded in rake multi.
+
+
 === 2.2.0 / 2012-05-10
 This release was created separate from 2.1.0 incase people don't want to upgrade to 3.0 (why?)
 
