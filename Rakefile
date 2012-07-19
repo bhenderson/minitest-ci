@@ -4,7 +4,7 @@ require 'rubygems'
 require 'hoe'
 
 Hoe.plugin :isolate
-Hoe.plugin :git
+Hoe.plugin :version, :git
 
 Hoe.spec 'minitest-ci' do
   developer 'Brian Henderson', 'bhenderson@attinteractive.com'
