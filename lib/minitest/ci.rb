@@ -65,7 +65,7 @@ module MiniTest
         when MiniTest::Assertion
           failures += 1
         else
-          errors += 1
+          errors += 1 unless e.nil? # Added unless e.nil? to not count passed tests only errors
         end
       end
 
