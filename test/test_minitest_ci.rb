@@ -72,7 +72,7 @@ class TestMinitest::TestCi < MiniTest::Unit::TestCase
   def test_testsuite
     assert_equal "1", @doc['skipped']
     assert_equal "2", @doc['failures']
-    assert_equal "4", @doc['errors']
+    assert_equal "3", @doc['errors'] # Changed from 4 to 3 to match total number of errors thrown in MockTestSuite
     assert_equal "3", @doc['assertions']
     assert_equal "7", @doc['tests']
     assert_equal "MockTestSuite", @doc['name']
