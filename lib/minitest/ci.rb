@@ -64,7 +64,7 @@ module MiniTest
           skips += 1
         when MiniTest::Assertion
           failures += 1
-        else
+        when Exception
           errors += 1
         end
       end
