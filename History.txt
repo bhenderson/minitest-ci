@@ -1,3 +1,12 @@
+=== 2.4.0 / 2012-11-10
+This release let's people use either 3.x or 4.x as 4.x doesn't break the
+needed api
+
+* 1 unknown:
+
+  * Broaden minitest dependency (millgmi #7)
+
+
 === 2.3.1 / 2012-11-10
 
 * 1 bug fix:
