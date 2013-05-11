@@ -7,6 +7,9 @@
 #
 # # optionally:
 # Autotest::MiniTestCI.report_dir = 'some/other/path/to/reports'
+#
+# I think this plugin can do more than what it does now, but not sure yet.
+# Leaving here to think about it more.
 module Autotest::MiniTestCI
   class << self
     attr_accessor :report_dir
