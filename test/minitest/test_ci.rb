@@ -104,19 +104,19 @@ class TestMinitest::TestCi < Minitest::Test
 
   def test_testcase_errors
     error = @doc.at_xpath('/testsuite/testcase[@name="test_raise_error"]')
-    assert_equal 'raise an error', error.at_xpath('failure')['message']
+    assert_equal 'raise an error', error.at_xpath('error')['message']
     assert_equal '0', error['assertions']
   end
 
   def test_testcase_error_with_invalid_chars
     error = @doc.at_xpath('/testsuite/testcase[@name="test_invalid_characters_in_message"]')
-    assert_match( /^#<Object/, error.at_xpath('failure')['message'] )
+    assert_match( /^#<Object/, error.at_xpath('error')['message'] )
     assert_equal '0', error['assertions']
   end
 
   def test_testcase_error_with_invalid_name
     error = @doc.at_xpath('/testsuite/testcase[@name="test_invalid_error_name"]')
-    assert_match( /^#<Class/, error.at_xpath('failure')['message'] )
+    assert_match( /^#<Class/, error.at_xpath('error')['message'] )
     assert_equal '0', error['assertions']
   end
 

@@ -90,7 +90,6 @@ module Minitest
           label = failure.result_label.downcase
 
           if failure.is_a?(UnexpectedError)
-            label = 'failure'
             failure = failure.error
           end
 
