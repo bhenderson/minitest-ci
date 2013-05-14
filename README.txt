@@ -4,13 +4,13 @@
 
 == DESCRIPTION:
 
-CI reporter plugin for MiniTest
+CI reporter plugin for Minitest
 
-This gem was made possible by ATT Interactive.
+This gem was made possible by YP.com
 
 == FEATURES/PROBLEMS:
 
-* Uses MiniTest::Unit#record which is only available since version 2.12.0
+* Uses Minitest::Reporter which is only available since version 5
 
 == SYNOPSIS:
 
@@ -21,12 +21,12 @@ for example) at the end of the test run. The report directory is cleaned
 between test runs. To disable:
 
   # test/helper.rb
-  MiniTest::Ci.auto_clean = false
+  Minitest::Ci.clean = false
 
   # Rakefile (optional, but recommended!)
   task :ci_cleanup do
     require 'minitest/ci'
-    MiniTest::Ci.clean
+    Minitest::Ci.new.start
   end
   task :test => %w[ci_cleanup test:one test:two]
 
