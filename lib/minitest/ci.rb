@@ -1,51 +1,58 @@
-gem 'minitest'
-require 'minitest/unit'
-#unless MiniTest::Unit::VERSION >= '2.12.0'
-unless MiniTest::Unit.public_method_defined? :record
-  abort 'you are running an unsupported version of MiniTest. try upgrading.'
-end
-
 require 'fileutils'
 require 'cgi'
 
-module MiniTest
-  module Ci
+module Minitest
+  class Ci < Reporter
 
     VERSION = '2.4.0'
 
-    @suites = Hash.new {|h,k| h[k] = []}
-
     class << self
+
+      ##
       # Accessor method to change the report dir if you don't like the
       # defaults.
+
       attr_accessor :report_dir
 
+      ##
       # Clean the report_dir between test runs? (defaults to true)
-      attr_accessor :auto_clean
+
+      attr_accessor :clean
     end
+
     self.report_dir = 'test/reports'
-    self.auto_clean = true
+    self.clean      = true
 
-    def push suite, method, num_assertions, time, error
-      @suites[suite] << [method, num_assertions, time, error]
+    def initialize *args
+      super
+
+      self.results = Hash.new {|h,k| h[k] = []}
     end
 
-    def finish io
+    def passed?
+      true # don't care?
+    end
+
+    def start # clean
+      FileUtils.rm_rf   report_dir if clean?
+      FileUtils.mkdir_p report_dir
+    end
+
+    def record result
+      results[result.class] << result
+    end
+
+    def report
       io.puts
       io.puts 'generating ci files'
 
-      clean
-
       Dir.chdir report_dir do
-        @suites.each do |name, suite|
-          generate_suite name, suite
+        results.each do |name, resultz|
+          File.open "TEST-#{CGI.escape(name.to_s)}.xml", "w" do |f|
+            f.puts generate_results name, resultz
+          end
         end
       end
-    end
-
-    def clean verbose = false
-      FileUtils.rm_rf report_dir, :verbose => verbose if auto_clean
-      FileUtils.mkdir_p report_dir, :verbose => verbose
     end
 
     private
@@ -54,65 +61,62 @@ module MiniTest
       CGI.escapeHTML(o.to_s)
     end
 
-    def generate_suite name, suite
+    def generate_results name, results
       total_time = assertions = errors = failures = skips = 0
-      suite.each do |_, a, t, e|
-        total_time += t
-        assertions += a
-        case e
-        when MiniTest::Skip
+      results.each do |result|
+        total_time += result.time
+        assertions += result.assertions
+        # p result.failure.class
+        case result.failure
+        when Skip
           skips += 1
-        when MiniTest::Assertion
-          failures += 1
-        when Exception
+        when UnexpectedError
           errors += 1
+        when Assertion
+          failures += 1
         end
       end
 
-      File.open "TEST-#{CGI.escape(name.to_s)}.xml", "w" do |f|
-        f.puts '<?xml version="1.0" encoding="UTF-8"?>'
-        f.puts "<testsuite time='#{"%6f" % total_time}' skipped='#{skips}' failures='#{failures}' errors='#{errors}' name='#{name}' assertions='#{assertions}' tests='#{suite.count}'>"
+      xml = []
 
-        suite.each do |method, asserts, time, error|
-          f.puts "  <testcase time='#{"%6f" % time}' name='#{method}' assertions='#{asserts}'>"
-          if error
-            bt = MiniTest::filter_backtrace error.backtrace
-            f.write "    <#{type error} type='#{escape error.class}' message=#{escape( error.message ).inspect}>"
-            f.puts escape bt.join "\n"
-            f.puts "    </#{type error}>"
+      xml << '<?xml version="1.0" encoding="UTF-8"?>'
+      xml << "<testsuite time='%6f' skipped='%d' failures='%d' errors='%d' name='%s' assertions='%d' tests='%d'>" %
+        [total_time, skips, failures, errors, name, assertions, results.count]
+
+      results.each do |result|
+        xml << "  <testcase time='%6f' name='%s' assertions='%s'>" %
+          [result.time, result.name, result.assertions]
+        if failure = result.failure
+          label = failure.result_label.downcase
+
+          if failure.is_a?(UnexpectedError)
+            label = 'failure'
+            failure = failure.error
           end
-          f.puts "  </testcase>"
+
+          klass = failure.class
+          msg   = failure.message
+          bt    = Minitest::filter_backtrace failure.backtrace
+
+          xml << "    <%s type='%s' message=%s>%s" %
+            [label, escape(klass), escape(msg).inspect, escape(bt.join("\n"))]
+          xml << "    </%s>" % label
         end
-
-        f.puts "</testsuite>"
+        xml << "  </testcase>"
       end
+
+      xml << "</testsuite>"
+
+      xml
     end
 
-    def type e
-      case e
-      when MiniTest::Skip
-        'skipped'
-      else
-        'failure'
-      end
+    def report_dir
+      options.fetch(:ci_dir, self.class.report_dir)
     end
 
-    extend self
-  end
-
-  class CiUnit < Unit
-
-    after_tests do
-      MiniTest::Ci.finish self.output
-    end
-
-    def record suite, method, assertions, time, error
-      MiniTest::Ci.push suite, method, assertions, time, error
-      super
+    def clean?
+      options.fetch(:ci_clean, self.class.clean)
     end
 
   end
 end
-
-# use
-MiniTest::Unit.runner = MiniTest::CiUnit.new

@@ -1,10 +1,11 @@
-require "minitest/ci"
-require "minitest/spec"
+gem 'minitest'
 require "minitest/autorun"
+require "minitest/ci"
+
 require 'stringio'
 require 'nokogiri'
 
-class MockTestSuite < MiniTest::Unit::TestCase
+class MockTestSuite < Minitest::Test
   def test_raise_error
     raise 'raise an error'
   end
@@ -40,30 +41,27 @@ SpecWithPunctuation = describe "spec/with::punctuation" do
  end
 end
 
-class TestMinitest
+# better way?
+$ci_io = StringIO.new
+Minitest::Ci.clean = false
+
+# setup test files
+reporter = Minitest::Ci.new $ci_io
+reporter.run_and_report do
+  Minitest.__run reporter, {}
 end
 
-class TestMinitest::TestCi < MiniTest::Unit::TestCase
-  @output = StringIO.new
-  old_out, MiniTest::Unit.output = MiniTest::Unit.output, @output
-  begin
-    runner = MiniTest::CiUnit.new
+Minitest::Runnable.reset
 
-    runner._run_suite MockTestSuite, :test
-    runner._run_suite SpecWithPunctuation, :test
+class TestMinitest; end
+class TestMinitest::TestCi < Minitest::Test
 
-    @@test_suites.delete MockTestSuite
-    MiniTest::Ci.finish runner.output
-  ensure
-    MiniTest::Unit.output = old_out
-  end
-
-  def self.output
-    @output
+  def output
+    $ci_io
   end
 
   def setup
-    file = "#{MiniTest::Ci.report_dir}/TEST-MockTestSuite.xml"
+    file = "test/reports/TEST-MockTestSuite.xml"
     @file = File.read file
     @doc = Nokogiri.parse @file
     @doc = @doc.at_xpath('/testsuite')
@@ -78,37 +76,51 @@ class TestMinitest::TestCi < MiniTest::Unit::TestCase
     assert_equal "MockTestSuite", @doc['name']
   end
 
-  def test_testcase
+  def test_testcase_count
     assert_equal 7, @doc.children.count {|c| Nokogiri::XML::Element === c}
     @doc.children.each do |c|
       next unless Nokogiri::XML::Element === c
       assert_equal 'testcase', c.name
     end
+  end
 
+  def test_testcase_passed
     passed = @doc.at_xpath('/testsuite/testcase[@name="test_pass"]')
     assert_equal 0, passed.children.count {|c| Nokogiri::XML::Element === c}
     assert_equal '1', passed['assertions']
+  end
 
+  def test_testcase_skipped
     skipped = @doc.at_xpath('/testsuite/testcase[@name="test_skip_assertion"]')
     assert_equal 'skip assertion', skipped.at_xpath('skipped')['message']
     assert_equal '0', skipped['assertions']
+  end
 
+  def test_testcase_failures
     failure = @doc.at_xpath('/testsuite/testcase[@name="test_fail_assertion"]')
     assert_equal 'fail assertion', failure.at_xpath('failure')['message']
     assert_equal '1', failure['assertions']
+  end
 
+  def test_testcase_errors
     error = @doc.at_xpath('/testsuite/testcase[@name="test_raise_error"]')
     assert_equal 'raise an error', error.at_xpath('failure')['message']
     assert_equal '0', error['assertions']
+  end
 
+  def test_testcase_error_with_invalid_chars
     error = @doc.at_xpath('/testsuite/testcase[@name="test_invalid_characters_in_message"]')
     assert_match( /^#<Object/, error.at_xpath('failure')['message'] )
     assert_equal '0', error['assertions']
+  end
 
+  def test_testcase_error_with_invalid_name
     error = @doc.at_xpath('/testsuite/testcase[@name="test_invalid_error_name"]')
     assert_match( /^#<Class/, error.at_xpath('failure')['message'] )
     assert_equal '0', error['assertions']
+  end
 
+  def test_testcase_error_with_bad_chars
     error = @doc.at_xpath('/testsuite/testcase[@name="test_escaping_failure_message"]')
     msg = "failed: doesn't like single or \"double\" quotes or symbols such as <"
     assert_equal msg, error.at_xpath('failure')['message']
@@ -116,8 +128,9 @@ class TestMinitest::TestCi < MiniTest::Unit::TestCase
   end
 
   def test_output
-    self.class.output.rewind
-    assert_match( /generating ci files/, self.class.output.read )
+    output.rewind
+    expected = "\ngenerating ci files\n"
+    assert_equal expected, output.read
   end
 
   def test_filtering_backtraces
@@ -126,7 +139,7 @@ class TestMinitest::TestCi < MiniTest::Unit::TestCase
   end
 
   def test_testname
-    assert File.file?(File.join(MiniTest::Ci.report_dir,
+    assert File.file?(File.join('test', 'reports',
                       "TEST-spec%2Fwith%3A%3Apunctuation.xml"))
   end
 end
