@@ -138,7 +138,7 @@ class TestMinitest::TestCi < Minitest::Test
     refute_match( /lib\/minitest/, error.inner_text )
   end
 
-  def test_testname
+  def test_filename
     assert File.file?(File.join('test', 'reports',
                       "TEST-spec%2Fwith%3A%3Apunctuation.xml"))
   end
