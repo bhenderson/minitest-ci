@@ -35,7 +35,7 @@ class MockTestSuite < Minitest::Test
   end
 end
 
-SpecWithPunctuation = describe "spec/with::punctuation" do
+SpecWithPunctuation = describe "spec/with::'punctuation'" do
  it "passes" do
    pass
  end
@@ -138,8 +138,9 @@ class TestMinitest::TestCi < Minitest::Test
     refute_match( /lib\/minitest/, error.inner_text )
   end
 
-  def test_testname
-    assert File.file?(File.join('test', 'reports',
-                      "TEST-spec%2Fwith%3A%3Apunctuation.xml"))
+  def test_suitename
+    file = File.read "test/reports/TEST-spec%2Fwith%3A%3A%27punctuation%27.xml"
+    suite = Nokogiri.parse(file).at_xpath('/testsuite')
+    assert_equal "spec/with::'punctuation'", suite['name']
   end
 end
