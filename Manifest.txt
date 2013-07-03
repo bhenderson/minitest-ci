@@ -1,7 +1,10 @@
 .autotest
 History.txt
+Isolate
 Manifest.txt
 README.txt
 Rakefile
+lib/autotest/minitest_ci.rb
 lib/minitest/ci.rb
-test/test_minitest_ci.rb
+lib/minitest/ci_plugin.rb
+test/minitest/test_ci.rb

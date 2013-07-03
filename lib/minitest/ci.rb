@@ -4,7 +4,7 @@ require 'cgi'
 module Minitest
   class Ci < Reporter
 
-    VERSION = '2.4.0'
+    VERSION = '3.0.0'
 
     class << self
 

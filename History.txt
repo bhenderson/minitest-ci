@@ -1,3 +1,22 @@
+=== 3.0.0 / 2013-07-03
+
+* 1 major enhancement:
+
+  * Retool to support minitest 5.
+
+* 1 bug fix:
+
+  * Use inspect to correctly escape test/class names. (eentzel) Fixes #8
+
+* 5 unknowns:
+
+  * Add autotest plugin.
+  * Add notes to autotest plugin.
+  * Update readme to reflect changes.
+  * Use Isolate file.
+  * Use error label.
+
+
 === 2.4.0 / 2012-11-10
 This release let's people use either 3.x or 4.x as 4.x doesn't break the
 needed api
