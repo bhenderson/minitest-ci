@@ -1,5 +1,6 @@
 require 'fileutils'
 require 'cgi'
+require 'minitest'
 
 module Minitest
   class Ci < Reporter
