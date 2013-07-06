@@ -1,5 +1,6 @@
 require 'fileutils'
 require 'cgi'
+require 'minitest'
 
 module Minitest
   class Ci < Reporter
@@ -22,6 +23,8 @@ module Minitest
 
     self.report_dir = 'test/reports'
     self.clean      = true
+
+    attr_accessor :results # :nodoc:
 
     def initialize *args
       super
