@@ -2,7 +2,7 @@ require 'fileutils'
 require 'cgi'
 
 module Minitest
-  class Ci < Reporter
+  class Ci
 
     VERSION = '3.0.0'
 
@@ -23,9 +23,13 @@ module Minitest
     self.report_dir = 'test/reports'
     self.clean      = true
 
-    def initialize *args
-      super
+    attr_accessor :io
+    attr_accessor :options
+    attr_accessor :results
 
+    def initialize io = $stdout, options = {}
+      self.io      = io
+      self.options = options
       self.results = Hash.new {|h,k| h[k] = []}
     end
 

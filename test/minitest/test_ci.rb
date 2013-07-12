@@ -47,9 +47,9 @@ Minitest::Ci.clean = false
 
 # setup test files
 reporter = Minitest::Ci.new $ci_io
-reporter.run_and_report do
-  Minitest.__run reporter, {}
-end
+reporter.start
+Minitest.__run reporter, {}
+reporter.report
 
 Minitest::Runnable.reset
 
