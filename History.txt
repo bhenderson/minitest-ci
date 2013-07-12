@@ -1,3 +1,10 @@
+=== 3.0.1 / 2013-07-12
+
+* 1 unknown:
+
+  * Fix Ci class after changes to Reporter. (ferrous26) #9
+
+
 === 3.0.0 / 2013-07-03
 
 * 1 major enhancement:
