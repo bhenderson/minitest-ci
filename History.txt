@@ -1,3 +1,13 @@
+=== 3.0.2 / 2013-08-19
+
+* 4 unknowns:
+
+  * Fix --ci-dir option.
+  * Fix --ci-dir option.
+  * Merge pull request #11 from zcrowell/patch-1
+  * Trying to specify TESTOPTS="--ci-dir=foo" results in OptionParser::NeedlessArgument because --ci-dir is missing a mandatory argument.
+
+
 === 3.0.1 / 2013-07-12
 
 * 1 unknown:
