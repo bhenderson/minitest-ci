@@ -7,7 +7,7 @@ module Minitest
   end
 
   def self.plugin_ci_options opts, options
-    opts.on "--ci-dir", "Set the CI report dir. Default to #{Ci.report_dir}" do |dir|
+    opts.on "--ci-dir DIR", "Set the CI report dir. Default to #{Ci.report_dir}" do |dir|
       options[:ci_dir] = dir
     end
 
