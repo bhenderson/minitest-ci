@@ -84,12 +84,12 @@ module Minitest
       xml = []
 
       xml << '<?xml version="1.0" encoding="UTF-8"?>'
-      xml << "<testsuite time='%6f' skipped='%d' failures='%d' errors='%d' name=%p assertions='%d' tests='%d'>" %
-        [total_time, skips, failures, errors, name.to_s, assertions, results.count]
+      xml << "<testsuite time='%6f' skipped='%d' failures='%d' errors='%d' name='%s' assertions='%d' tests='%d'>" %
+        [total_time, skips, failures, errors, escape(name), assertions, results.count]
 
       results.each do |result|
-        xml << "  <testcase time='%6f' name=%p assertions='%s'>" %
-          [result.time, result.name, result.assertions]
+        xml << "  <testcase time='%6f' name='%s' assertions='%s'>" %
+          [result.time, escape(result.name), result.assertions]
         if failure = result.failure
           label = failure.result_label.downcase
 
