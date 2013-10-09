@@ -41,6 +41,12 @@ SpecWithPunctuation = describe "spec/with::'punctuation'" do
  end
 end
 
+SpecWithDoubleQuote = describe 'spec/with::"doublequotes"' do
+ it 'will "pass"' do
+   pass
+ end
+end
+
 # better way?
 $ci_io = StringIO.new
 Minitest::Ci.clean = false
@@ -142,5 +148,18 @@ class TestMinitest::TestCi < Minitest::Test
     file = File.read "test/reports/TEST-spec%2Fwith%3A%3A%27punctuation%27.xml"
     suite = Nokogiri.parse(file).at_xpath('/testsuite')
     assert_equal "spec/with::'punctuation'", suite['name']
+  end
+
+  def test_suitename_with_double_quotes
+    file = File.read "test/reports/TEST-spec%2Fwith%3A%3A%22doublequotes%22.xml"
+    suite = Nokogiri.parse(file).at_xpath('/testsuite')
+    assert_equal 'spec/with::"doublequotes"', suite['name']
+  end
+
+  def test_testcase_name_with_double_quotes
+    file = File.read "test/reports/TEST-spec%2Fwith%3A%3A%22doublequotes%22.xml"
+
+    testcase = Nokogiri.parse(file).at_xpath('/testsuite/testcase')
+    assert_equal 'test_0001_will "pass"', testcase['name']
   end
 end
