@@ -1,3 +1,10 @@
+=== 3.0.3 / 2013-10-08
+
+* 1 unknown:
+
+  * Escape suite and testcase name. (statianzo) #12
+
+
 === 3.0.2 / 2013-08-19
 
 * 4 unknowns:
