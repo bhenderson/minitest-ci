@@ -35,8 +35,14 @@ class MockTestSuite < Minitest::Test
   end
 end
 
-SpecWithPunctuation = describe "spec/with::'punctuation'" do
+describe "spec/with::'punctuation'" do
  it "passes" do
+   pass
+ end
+end
+
+describe "spec/with::\"doublequotes\"" do
+ it 'will "pass"' do
    pass
  end
 end
@@ -138,9 +144,19 @@ class TestMinitest::TestCi < Minitest::Test
     refute_match( /lib\/minitest/, error.inner_text )
   end
 
-  def test_suitename
+  def test_suitename_with_single_quotes
     file = File.read "test/reports/TEST-spec%2Fwith%3A%3A%27punctuation%27.xml"
     suite = Nokogiri.parse(file).at_xpath('/testsuite')
     assert_equal "spec/with::'punctuation'", suite['name']
+  end
+
+  def test_suitename_with_double_quotes
+    file = File.read "test/reports/TEST-spec%2Fwith%3A%3A%22doublequotes%22.xml"
+    doc = Nokogiri.parse(file)
+    suite = doc.at_xpath('/testsuite')
+    testcase = doc.at_xpath('/testsuite/testcase')
+
+    assert_equal 'spec/with::"doublequotes"', suite['name']
+    assert_equal 'test_0001_will "pass"', testcase['name']
   end
 end
