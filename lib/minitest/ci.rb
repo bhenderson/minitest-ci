@@ -88,8 +88,8 @@ module Minitest
         [total_time, skips, failures, errors, escape(name), assertions, results.count]
 
       results.each do |result|
-        xml << "  <testcase time='%6f' name=%p assertions='%s'>" %
-          [result.time, escape(result.name), result.assertions]
+        xml << "  <testcase time='%6f' file=%p name=%p assertions='%s'>" %
+          [result.time, escape(result.method(result.name).source_location[0]), escape(result.name), result.assertions]
         if failure = result.failure
           label = failure.result_label.downcase
 
