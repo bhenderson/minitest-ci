@@ -1,8 +1,14 @@
 = minitest-ci
 
-* https://github.com/bhenderson/minitest-ci
+* https://github.com/circleci/minitest-ci
 
 == DESCRIPTION:
+
+*** NOTE ***
+I've passed ownership over to
+circleci[https://github.com/circleci/minitest-ci]. Thank you all so much for
+using this.
+*** NOTE ***
 
 CI reporter plugin for Minitest
 
