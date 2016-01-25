@@ -1,4 +1,4 @@
-= minitest-ci
+= minitest-ci {<img src="https://circleci.com/gh/circleci/minitest-ci.svg?style=svg" alt="Circle CI" />}[https://circleci.com/gh/circleci/minitest-ci]
 
 * https://github.com/bhenderson/minitest-ci
 
