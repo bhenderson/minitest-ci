@@ -18,10 +18,12 @@ module Minitest
       # Clean the report_dir between test runs? (defaults to true)
 
       attr_accessor :clean
+      attr_accessor :working_dir
     end
 
     self.report_dir = 'test/reports'
     self.clean      = true
+    self.working_dir = Dir.pwd
 
     attr_accessor :io
     attr_accessor :options
@@ -81,6 +83,7 @@ module Minitest
         end
       end
 
+      base = self.class.working_dir + '/'
       xml = []
 
       xml << '<?xml version="1.0" encoding="UTF-8"?>'
@@ -88,8 +91,8 @@ module Minitest
         [total_time, skips, failures, errors, escape(name), assertions, results.count]
 
       results.each do |result|
-        xml << "  <testcase time='%6f' name=%p assertions='%s'>" %
-          [result.time, escape(result.name), result.assertions]
+        xml << "  <testcase time='%6f' file=%p name=%p assertions='%s'>" %
+          [result.time, escape(result.method(result.name).source_location[0].gsub(base, '')), escape(result.name), result.assertions]
         if failure = result.failure
           label = failure.result_label.downcase
 
@@ -102,7 +105,7 @@ module Minitest
           bt    = Minitest::filter_backtrace failure.backtrace
 
           xml << "    <%s type='%s' message=%s>%s" %
-            [label, escape(klass), escape(msg).inspect, escape(bt.join("\n"))]
+            [label, escape(klass), escape(msg).inspect.gsub('\n', "&#13;&#10;"), escape(bt.join("\n"))]
           xml << "    </%s>" % label
         end
         xml << "  </testcase>"
