@@ -1,0 +1,9 @@
+dependencies:
+  post:
+    - gem install hoe isolate nokogiri
+test:
+  override:
+    - rake newb
+    - mkdir $CIRCLE_TEST_REPORTS/minitest
+    - cp -vr test/reports $CIRCLE_TEST_REPORTS
+
