@@ -1,6 +1,6 @@
-# minitest-ci
+# minitest-ci [![Circle CI](https://circleci.com/gh/circleci/minitest-ci.svg?style=svg)](https://circleci.com/gh/circleci/minitest-ci)
 
-* https://github.com/bhenderson/minitest-ci
+* https://github.com/circleci/minitest-ci
 
 ## Description:
 
