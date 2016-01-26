@@ -1,18 +1,18 @@
-= minitest-ci
+# minitest-ci
 
 * https://github.com/bhenderson/minitest-ci
 
-== DESCRIPTION:
+## Description:
 
 CI reporter plugin for Minitest
 
 This gem was made possible by YP.com
 
-== FEATURES/PROBLEMS:
+## Features/problems:
 
 * Uses Minitest::Reporter which is only available since version 5
 
-== SYNOPSIS:
+## Synopsis:
 
   require 'minitest/ci'
 
@@ -30,24 +30,25 @@ between test runs. To disable:
   end
   task :test => %w[ci_cleanup test:one test:two]
 
-== REQUIREMENTS:
+## Requirements
 
 * See Rakefile
 
-== INSTALL:
+## Install
 
-* gem install minitest-ci
+    gem install minitest-ci
 
-== DEVELOPERS:
+
+## Developers
 
 After checking out the source, run:
 
-  $ rake newb
+    $ rake newb
 
 This task will install any missing dependencies, run the tests/specs,
 and generate the RDoc.
 
-== LICENSE:
+## License
 
 (The MIT License)
 
