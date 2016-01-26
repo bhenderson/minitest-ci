@@ -14,21 +14,23 @@ This gem was made possible by YP.com
 
 ## Synopsis:
 
-  require 'minitest/ci'
+    require 'minitest/ci'
 
 Records test results and generates XML files (for junit hudson plugin
 for example) at the end of the test run. The report directory is cleaned
 between test runs. To disable:
 
-  # test/helper.rb
-  Minitest::Ci.clean = false
+```Ruby
+# test/helper.rb
+Minitest::Ci.clean = false
 
-  # Rakefile (optional, but recommended!)
-  task :ci_cleanup do
-    require 'minitest/ci'
-    Minitest::Ci.new.start
-  end
-  task :test => %w[ci_cleanup test:one test:two]
+# Rakefile (optional, but recommended!)
+task :ci_cleanup do
+  require 'minitest/ci'
+  Minitest::Ci.new.start
+end
+task :test => %w[ci_cleanup test:one test:two]
+```
 
 ## Requirements
 
@@ -36,7 +38,7 @@ between test runs. To disable:
 
 ## Install
 
-    gem install minitest-ci
+    $ gem install minitest-ci
 
 
 ## Developers
