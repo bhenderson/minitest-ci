@@ -1,18 +1,20 @@
-# minitest-ci [![Circle CI](https://circleci.com/gh/circleci/minitest-ci.svg?style=svg)](https://circleci.com/gh/circleci/minitest-ci)
+= minitest-ci
+
+{<img src="https://circleci.com/gh/circleci/minitest-ci.svg?style=svg" alt="Circle CI" />}[https://circleci.com/gh/circleci/minitest-ci]
 
 * https://github.com/circleci/minitest-ci
 
-## Description:
+== DESCRIPTION:
 
 CI reporter plugin for Minitest
 
 This gem was made possible by YP.com
 
-## Features/problems:
+== FEATURES/PROBLEMS:
 
 * Uses Minitest::Reporter which is only available since version 5
 
-## Synopsis:
+== SYNOPSIS:
 
     require 'minitest/ci'
 
@@ -32,25 +34,28 @@ end
 task :test => %w[ci_cleanup test:one test:two]
 ```
 
-## Requirements
+== REQUIREMENTS:
 
 * See Rakefile
 
-## Install
+== INSTALL:
 
+<<<<<<< HEAD:README.md
     $ gem install minitest-ci
+=======
+* gem install minitest-ci
+>>>>>>> parent of 30e0766... Change README to markdown:README.rdoc
 
-
-## Developers
+== DEVELOPERS:
 
 After checking out the source, run:
 
-    $ rake newb
+  $ rake newb
 
 This task will install any missing dependencies, run the tests/specs,
 and generate the RDoc.
 
-## License
+== LICENSE:
 
 (The MIT License)
 
