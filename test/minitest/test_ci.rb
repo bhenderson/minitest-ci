@@ -47,6 +47,12 @@ describe "spec/with::\"doublequotes\"" do
  end
 end
 
+describe 'spec/with::long_file_name' * 100 do
+  it 'will not throw filename too long errors' do
+    pass
+  end
+end
+
 # better way?
 $ci_io = StringIO.new
 Minitest::Ci.clean = false
