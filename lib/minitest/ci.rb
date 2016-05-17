@@ -54,7 +54,7 @@ module Minitest
 
       Dir.chdir report_dir do
         results.each do |name, resultz|
-          File.open "TEST-#{CGI.escape(name.to_s)}.xml", "w" do |f|
+          File.open "TEST-#{CGI.escape(name.to_s)}.xml"[0, 255], "w" do |f|
             f.puts generate_results name, resultz
           end
         end

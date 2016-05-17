@@ -40,11 +40,7 @@ task :test => %w[ci_cleanup test:one test:two]
 
 == INSTALL:
 
-<<<<<<< HEAD:README.md
-    $ gem install minitest-ci
-=======
 * gem install minitest-ci
->>>>>>> parent of 30e0766... Change README to markdown:README.rdoc
 
 == DEVELOPERS:
 
