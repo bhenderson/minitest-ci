@@ -1,20 +1,20 @@
-= minitest-ci
+# minitest-ci
 
-{<img src="https://circleci.com/gh/circleci/minitest-ci.svg?style=svg" alt="Circle CI" />}[https://circleci.com/gh/circleci/minitest-ci]
+[<img src="https://circleci.com/gh/circleci/minitest-ci.svg?style=svg" alt="Circle CI" />](https://circleci.com/gh/circleci/minitest-ci)
 
 * https://github.com/circleci/minitest-ci
 
-== DESCRIPTION:
+## DESCRIPTION:
 
 CI reporter plugin for Minitest
 
 This gem was made possible by YP.com
 
-== FEATURES/PROBLEMS:
+## FEATURES/PROBLEMS:
 
 * Uses Minitest::Reporter which is only available since version 5
 
-== SYNOPSIS:
+## SYNOPSIS:
 
     require 'minitest/ci'
 
@@ -34,24 +34,24 @@ end
 task :test => %w[ci_cleanup test:one test:two]
 ```
 
-== REQUIREMENTS:
+## REQUIREMENTS:
 
 * See Rakefile
 
-== INSTALL:
+## INSTALL:
 
-* gem install minitest-ci
+    gem install minitest-ci
 
-== DEVELOPERS:
+## DEVELOPERS:
 
 After checking out the source, run:
 
-  $ rake newb
+    $ rake newb
 
 This task will install any missing dependencies, run the tests/specs,
 and generate the RDoc.
 
-== LICENSE:
+## LICENSE:
 
 (The MIT License)
 
