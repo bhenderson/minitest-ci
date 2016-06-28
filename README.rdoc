@@ -22,17 +22,15 @@ Records test results and generates XML files (for junit hudson plugin
 for example) at the end of the test run. The report directory is cleaned
 between test runs. To disable:
 
-```Ruby
-# test/helper.rb
-Minitest::Ci.clean = false
+    # test/helper.rb
+    Minitest::Ci.clean = false
 
-# Rakefile (optional, but recommended!)
-task :ci_cleanup do
-  require 'minitest/ci'
-  Minitest::Ci.new.start
-end
-task :test => %w[ci_cleanup test:one test:two]
-```
+    # Rakefile (optional, but recommended!)
+    task :ci_cleanup do
+      require 'minitest/ci'
+      Minitest::Ci.new.start
+    end
+    task :test => %w[ci_cleanup test:one test:two]
 
 == REQUIREMENTS:
 
