@@ -2,3 +2,4 @@
 pkg
 tmp
 test/reports
+Gemfile.lock

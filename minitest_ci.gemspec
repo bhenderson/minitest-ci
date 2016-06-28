@@ -14,6 +14,12 @@ Gem::Specification.new do |s|
 
   s.add_dependency "minitest", '>= 5.0.6', '~> 5.0'
 
+  s.add_development_dependency "hoe", '~> 3.15.0'
+  s.add_development_dependency "rake", '~> 11.1.2'
+  s.add_development_dependency "nokogiri", '~> 1.5.0'
+  s.add_development_dependency 'rdoc', '>= 2.4.2'
+  s.add_development_dependency 'ZenTest'
+
   s.files        = Dir["lib/**/*"] + %w[README.txt]
   s.require_path = "lib"
 end

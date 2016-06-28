@@ -2,9 +2,7 @@
 
 require 'rubygems'
 require 'hoe'
-require 'isolate/rake'
 
-Hoe.plugin :isolate
 Hoe.plugin :version, :git
 Hoe.plugin :rdoc
 
