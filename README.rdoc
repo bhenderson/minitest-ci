@@ -32,16 +32,15 @@ between test runs. To disable:
     end
     task :test => %w[ci_cleanup test:one test:two]
 
-To configure the test output folder, use the "--ci-dir=" option, setting it in TESTOPS.  On CircleCI, you might want to use something like:
+To configure the test output folder, use the "--ci-dir=" option, setting it in TESTOPS.  On CircleCI, you might want to use something like this in your circle.yml:
+    
 
-```
-test:
-  override:
-    - bundle exec rake test TESTOPTS="--ci-dir=$CIRCLE_TEST_REPORTS":
-        parallel: true
-        files:
-          - test/**/*.rb
-```
+    test:
+      override:
+        - bundle exec rake test TESTOPTS="--ci-dir=$CIRCLE_TEST_REPORTS":
+            parallel: true
+            files:
+              - test/**/*.rb
 
 == REQUIREMENTS:
 
