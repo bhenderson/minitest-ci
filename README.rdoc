@@ -36,7 +36,7 @@ For more complicated setups, see below.
 === Custom setup
 
 To configure the test output folder, use the "--ci-dir=" option, setting it in
-TESTOPS.  On CircleCI, you might want to use something like this in your
+TESTOPTS.  On CircleCI, you might want to use something like this in your
 circle.yml:
 
     test:
