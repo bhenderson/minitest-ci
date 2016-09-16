@@ -1,0 +1,10 @@
+== DEVELOPERS:
+
+After checking out the source, run:
+
+  $ bundle install
+  $ bundle exec rake newb
+
+This task will install any missing dependencies, run the tests/specs,
+and generate the RDoc.
+
