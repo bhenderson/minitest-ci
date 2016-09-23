@@ -1,7 +1,8 @@
+dependencies:
+  pre:
+    - gem install bundler --version=1.13.1
+
 test:
-  dependencies:
-    pre:
-      - gem install bundler --version=1.13.1
   override:
     - mkdir $CIRCLE_TEST_REPORTS/minitest
     - cp -vr test/reports $CIRCLE_TEST_REPORTS
