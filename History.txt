@@ -1,3 +1,17 @@
+=== 3.1.0 / 2016-09-23
+
+* 2 bug fixes
+
+  * Properly escape newline characters in XML output (danielma)
+  * Limit output of test names to first 255 characters (KernCheh)
+
+* 2 unknowns
+
+  * Cleanup README (zzak, marcomorain, girasquid)
+  * Run on CircleCI (marcomorain)
+  * Switch from Hoe to Bundler's gem tasks
+
+
 === 3.0.3 / 2013-10-08
 
 * 1 unknown:

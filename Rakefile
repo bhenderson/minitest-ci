@@ -1,15 +1,10 @@
-# -*- ruby -*-
+require 'bundler/gem_tasks'
+require 'rake/testtask'
 
-require 'rubygems'
-require 'hoe'
-
-Hoe.plugin :version, :git
-Hoe.plugin :rdoc
-
-Hoe.spec 'minitest-ci' do
-  developer 'Brian Henderson', 'bhenderson@attinteractive.com'
-
-  self.testlib = :none
+Rake::TestTask.new(:test) do |t|
+  t.libs << 'test'
+  t.libs << 'lib'
+  t.test_files = FileList['test/**/test_*.rb']
 end
 
-# vim: syntax=ruby
+task :default => :test

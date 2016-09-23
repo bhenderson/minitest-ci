@@ -17,7 +17,7 @@ for example) at the end of the test run.
 
 In order to use this gem, add it to your Gemfile:
 
-    gem "minitest-cli", :github => "circleci/minitest-ci"
+    gem "minitest-cli"
 
 To make integration with CircleCI easier, make sure you have a ":test" task defined. You can do simply by adding the following to your Rakefile:
 
