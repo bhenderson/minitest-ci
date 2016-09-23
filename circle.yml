@@ -3,6 +3,7 @@ dependencies:
     - gem install bundler --version=1.13.1
 
 test:
-  override:
+  pre:
     - mkdir $CIRCLE_TEST_REPORTS/minitest
-    - cp -vr test/reports $CIRCLE_TEST_REPORTS
+  post:
+    - cp --verbose --recursive test/reports $CIRCLE_TEST_REPORTS
