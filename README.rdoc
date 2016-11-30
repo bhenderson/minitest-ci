@@ -46,6 +46,19 @@ circle.yml:
             files:
               - test/**/*.rb
 
+Alternatively, you can add the following code to your test runner setup:
+
+    # test/helper.rb
+    require 'minitest'
+    require 'minitest/autorun'
+    require 'minitest/ci'
+
+    Minitest::Ci.report_dir = "#{ENV["CIRCLE_TEST_REPORTS"]}/reports"
+
+    class MiniTest::Test
+      # include other helpers, etc
+    end
+
 
 **NOTE**: The report directory is cleaned between test runs. To disable:
 
